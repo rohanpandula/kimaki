@@ -2,6 +2,7 @@
 // Processes all slash commands (/session, /resume, /fork, /model, /abort, etc.)
 // and manages autocomplete, select menu interactions for the bot.
 
+import { handleFarmCommand } from './commands/farm.js'
 import {
   Events,
   MessageFlags,
@@ -390,6 +391,10 @@ export function registerInteractionHandler({
 
             case 'queue':
               await handleQueueCommand({ command: interaction, appId })
+              return
+
+            case 'farm':
+              await handleFarmCommand({ command: interaction, appId })
               return
 
             case 'clear-queue':

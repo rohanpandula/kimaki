@@ -1,0 +1,16 @@
+{
+  "uid": "kimaki-farm-jobs",
+  "title": "Kimaki farm jobs",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {"from": "now-6h", "to": "now"},
+  "templating": {"list": [{"name": "datasource", "type": "datasource", "query": "prometheus", "current": {}}]},
+  "panels": [
+    {"id": 1, "title": "Jobs by state", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${datasource}"}, "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}, "targets": [{"expr": "farm_jobs", "legendFormat": "{{state}}", "refId": "A"}]},
+    {"id": 2, "title": "Quarantined devices", "type": "stat", "datasource": {"type": "prometheus", "uid": "${datasource}"}, "gridPos": {"x": 12, "y": 0, "w": 6, "h": 8}, "targets": [{"expr": "farm_quarantined_devices", "refId": "A"}]},
+    {"id": 3, "title": "Stale Mac workers", "type": "stat", "datasource": {"type": "prometheus", "uid": "${datasource}"}, "gridPos": {"x": 18, "y": 0, "w": 6, "h": 8}, "targets": [{"expr": "farm_stale_workers", "refId": "A"}]},
+    {"id": 4, "title": "Oldest queued job (seconds)", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${datasource}"}, "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8}, "targets": [{"expr": "farm_queue_oldest_seconds", "refId": "A"}]},
+    {"id": 5, "title": "Projects awaiting Discord delivery", "type": "timeseries", "datasource": {"type": "prometheus", "uid": "${datasource}"}, "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8}, "targets": [{"expr": "farm_notification_backlog", "refId": "A"}]}
+  ]
+}

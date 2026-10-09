@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kimaki-farm-control"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1", "psycopg[binary]>=3.2,<4", "httpx>=0.28,<1"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[project.scripts]
+farm-control = "farm_control.main:main"
+
+[tool.setuptools.package-data]
+farm_control = ["schema.sql"]
+
+[tool.setuptools.packages.find]
+include = ["farm_control*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

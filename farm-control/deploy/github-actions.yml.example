@@ -1,0 +1,29 @@
+name: Farm control
+on:
+  pull_request:
+    paths: ['farm-control/**', 'cli/src/**', '.github/workflows/farm-control.yml']
+  push:
+    paths: ['farm-control/**', 'cli/src/**', '.github/workflows/farm-control.yml']
+permissions:
+  contents: read
+jobs:
+  postgres-recovery:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: farm_test
+          POSTGRES_PASSWORD: disposable-ci-password
+          POSTGRES_DB: farm_test
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -e './farm-control[test]'
+      - run: pytest farm-control/tests -q
+        env:
+          FARM_TEST_DATABASE_URL: postgresql://farm_test:disposable-ci-password@127.0.0.1:5432/farm_test

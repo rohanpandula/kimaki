@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+umask 077
+# Replace OPERATOR and use chmod 600 on this operator-owned configuration file.
+set -a
+. /Users/OPERATOR/.config/kimaki-farm/worker.env
+set +a
+exec /Users/OPERATOR/farm-control/.venv/bin/farm-control worker

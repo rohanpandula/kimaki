@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: farm
+      POSTGRES_USER: farm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a random database password}
+    volumes:
+      - farm-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U farm -d farm']
+      interval: 5s
+      retries: 12
+    restart: unless-stopped
+  migrate:
+    build: .
+    command: [farm-control, migrate]
+    environment:
+      FARM_DATABASE_URL: ${FARM_DATABASE_URL:?Set PostgreSQL URL with postgres as host}
+    depends_on:
+      postgres:
+        condition: service_healthy
+  api:
+    build: .
+    environment:
+      FARM_DATABASE_URL: ${FARM_DATABASE_URL}
+      FARM_CREDENTIALS: ${FARM_CREDENTIALS:?Set scoped credentials JSON}
+      FARM_BIND: 0.0.0.0
+    ports: ["127.0.0.1:8090:8090"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+  notifier:
+    build: .
+    profiles: [notifications]
+    command: [farm-control, notify]
+    environment:
+      FARM_DATABASE_URL: ${FARM_DATABASE_URL}
+      FARM_DISCORD_TOKEN: ${FARM_DISCORD_TOKEN:-}
+      FARM_DISCORD_CHANNELS: ${FARM_DISCORD_CHANNELS:-{}}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+volumes:
+  farm-postgres:

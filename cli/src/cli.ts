@@ -27,6 +27,7 @@ import sessionCommands from './cli-commands/session.js'
 import taskCommands from './cli-commands/task.js'
 import threadCommands from './cli-commands/thread.js'
 import userCommands from './cli-commands/user.js'
+import farmCommands from './cli-commands/farm.js'
 import {
   EXIT_NO_RESTART,
   printDiscordInstallUrlAndExit,
@@ -35,6 +36,7 @@ import {
 
 const cliLogger = createLogger(LogPrefix.CLI)
 const cli = goke('kimaki')
+cli.use(farmCommands)
 cli.use(multioauthCommands)
 
 process.title = 'kimaki'

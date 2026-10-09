@@ -1,0 +1,28 @@
+groups:
+  - name: farm-control
+    rules:
+      - alert: FarmUnavailable
+        expr: up{job="farm-control"} == 0
+        for: 2m
+        annotations:
+          summary: Farm API or PostgreSQL is unavailable
+      - alert: FarmUnknownOutcome
+        expr: farm_quarantined_devices > 0
+        for: 1m
+        annotations:
+          summary: Stop old executors and reconcile uncertain device jobs
+      - alert: FarmQueueStalled
+        expr: farm_queue_oldest_seconds > 600
+        for: 5m
+        annotations:
+          summary: Farm queue is waiting for capacity, fresh inventory or operator reconciliation
+      - alert: FarmWorkerMissing
+        expr: farm_stale_workers > 0
+        for: 1m
+        annotations:
+          summary: Mac worker observations are stale
+      - alert: FarmNotificationsDisabled
+        expr: farm_notification_disabled > 0
+        for: 1m
+        annotations:
+          summary: Repair Discord credentials or permissions and reenable the affected outbox

@@ -17,6 +17,7 @@ import {
   buildQuickAgentCommandDescription,
 } from './commands/agent.js'
 import { isSkillAllowed } from './skill-filter.js'
+import { buildFarmCommand } from './commands/farm.js'
 
 const cliLogger = createLogger(LogPrefix.CLI)
 
@@ -105,6 +106,7 @@ export async function registerCommands({
   agents?: AgentInfo[]
 }) {
   const commands = [
+    buildFarmCommand().toJSON(),
     new SlashCommandBuilder()
       .setName('resume')
       .setDescription(truncateCommandDescription('Resume an existing OpenCode session'))
